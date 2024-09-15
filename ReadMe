@@ -1,0 +1,41 @@
+Scripts and Their Correspondence to Assignment Parts
+
+    tree_module.py
+        Purpose: Contains the core functions for growing a classification tree (tree_grow) and predicting class labels using the tree (tree_pred).
+        Assignment Requirements Covered:
+            Part 1: Programming
+                Function tree_grow: Implements the function to grow a classification tree as specified in the assignment. It accepts the input arguments x, y, nmin, minleaf, and nfeat, in that order.
+                Function tree_pred: Implements the function to predict class labels for given attribute values using the tree created by tree_grow.
+        Details:
+            The tree_grow function recursively builds the decision tree by selecting the best splits based on the Gini index, while respecting the nmin and minleaf constraints.
+            The tree_pred function traverses the decision tree to predict class labels for new data.
+
+    helper_functions.py
+        Purpose: Provides utility functions like gini and best_split, which are essential for the tree-growing process.
+        Assignment Requirements Covered:
+            Part 1: Programming
+                Use of Gini Index: Implements the Gini index calculation for determining the quality of a split, as required in the assignment.
+            Details:
+                The gini function calculates the Gini impurity for a set of labels.
+                The best_split function finds the optimal feature and threshold to split on, considering the minleaf constraint and randomly selecting nfeat features.
+
+    ensemble_module.py
+        Purpose: Builds upon the single tree functions to implement ensemble methods for bagging and random forests. Contains tree_grow_b, tree_pred_b, and random_forest functions.
+        Assignment Requirements Covered:
+            Part 1: Programming
+                Function tree_grow_b: Implements the function to grow multiple trees using bootstrap samples (bagging), as specified in the assignment.
+                Function tree_pred_b: Implements the function to predict class labels using an ensemble of trees, by applying tree_pred to each tree and aggregating the predictions via majority voting.
+            Details:
+                The tree_grow_b function grows m trees, each trained on a bootstrap sample of the training data.
+                The tree_pred_b function aggregates predictions from multiple trees to make a final prediction for each sample.
+
+    data_analysis.py
+        Purpose: Utilizes the functions from the other scripts to perform the required data analysis, compute metrics, and print results.
+        Assignment Requirements Covered:
+            Part 2: Data Analysis
+                Step 1: Trains a single classification tree with specified parameters and computes accuracy, precision, and recall on the test set.
+                Step 2: Implements bagging using the same parameters and computes the evaluation metrics.
+                Step 3: Implements random forests by adjusting nfeat and computes the evaluation metrics.
+            Details:
+                The script loads the Eclipse bug data set, selects the appropriate features, and divides the data into training and test sets.
+                It then trains models as per the assignment instructions and computes the required performance metrics.
