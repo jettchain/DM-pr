@@ -23,8 +23,8 @@ y_test = test_df['post'].values
 # Ensure that class labels are binary (0 and 1)
 # If necessary, map other labels to 0 and 1
 # For example:
-# y_train = np.where(y_train > 0, 1, 0)
-# y_test = np.where(y_test > 0, 1, 0)
+y_train = np.where(y_train > 0, 1, 0)
+y_test = np.where(y_test > 0, 1, 0)
 
 # Analysis Parameters
 nmin = 15
@@ -38,6 +38,7 @@ m_trees = 100  # Number of trees for bagging and random forest
 print("Training a single classification tree...")
 single_tree = tree_grow(X_train, y_train, nmin, minleaf, nfeat_full)
 y_pred_single = tree_pred(X_test, single_tree)
+y_pred_single = np.where(y_pred_single > 0, 1, 0)
 
 # Compute metrics for the single tree
 accuracy_single = accuracy_score(y_test, y_pred_single)
@@ -56,6 +57,7 @@ print(f"Recall: {recall_single:.4f}")
 print("\nTraining an ensemble using bagging...")
 bagging_trees = tree_grow_b(X_train, y_train, nmin, minleaf, nfeat_full, m_trees)
 y_pred_bagging = tree_pred_b(X_test, bagging_trees)
+y_pred_bagging = np.where(y_pred_bagging > 0, 1, 0)
 
 # Compute metrics for bagging
 accuracy_bagging = accuracy_score(y_test, y_pred_bagging)
