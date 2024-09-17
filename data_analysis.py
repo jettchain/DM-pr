@@ -20,6 +20,9 @@ y_train = train_df['post'].values  # Binary target variable: 0 or 1
 X_test = test_df[selected_features].values
 y_test = test_df['post'].values
 
+y_train = np.where(y_train > 0, 1, 0)
+y_test = np.where(y_test > 0, 1, 0)
+
 # Ensure that class labels are binary (0 and 1)
 # If necessary, map other labels to 0 and 1
 
@@ -34,6 +37,7 @@ m_trees = 100  # Number of trees for bagging and random forest
 # 1. Train a single classification tree
 single_tree = tree_grow(X_train, y_train, nmin, minleaf, nfeat_full)
 y_pred_single = tree_pred(X_test, single_tree)
+y_pred_single = np.where(y_pred_single > 0, 1, 0)
 
 # Compute metrics for the single tree
 accuracy_single = accuracy_score(y_test, y_pred_single)
@@ -51,6 +55,7 @@ print(f"Recall: {recall_single:.4f}")
 # 2. Bagging with m = 100 trees
 bagging_trees = tree_grow_b(X_train, y_train, nmin, minleaf, nfeat_full, m_trees)
 y_pred_bagging = tree_pred_b(X_test, bagging_trees)
+y_pred_bagging = np.where(y_test > 0, 1, 0)
 
 # Compute metrics for bagging
 accuracy_bagging = accuracy_score(y_test, y_pred_bagging)
@@ -68,6 +73,7 @@ print(f"Recall: {recall_bagging:.4f}")
 # 3. Random Forests with nfeat = sqrt(total_features)
 random_forest_trees = random_forest(X_train, y_train, nmin, minleaf, nfeat_sqrt, m_trees)
 y_pred_rf = tree_pred_b(X_test, random_forest_trees)
+y_pred_rf = np.where(y_pred_rf > 0, 1, 0)
 
 # Compute metrics for random forest
 accuracy_rf = accuracy_score(y_test, y_pred_rf)
