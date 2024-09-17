@@ -55,7 +55,7 @@ print(f"Recall: {recall_single:.4f}")
 # 2. Bagging with m = 100 trees
 bagging_trees = tree_grow_b(X_train, y_train, nmin, minleaf, nfeat_full, m_trees)
 y_pred_bagging = tree_pred_b(X_test, bagging_trees)
-y_pred_bagging = np.where(y_test > 0, 1, 0)
+y_pred_bagging = np.where(y_pred_bagging > 0, 1, 0)
 
 # Compute metrics for bagging
 accuracy_bagging = accuracy_score(y_test, y_pred_bagging)
