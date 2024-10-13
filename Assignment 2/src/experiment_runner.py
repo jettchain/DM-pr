@@ -1,10 +1,12 @@
+# src/experiment_runner.py
+
 from src.data_loader import load_and_split_data
 from src.preprocessor import clean_text, extract_features
 from src.models.naive_bayes import NaiveBayesClassifier
 from src.models.logistic_regression import LogisticRegressionClassifier
 from src.models.decision_tree import DecisionTreeModel
 from src.models.random_forest import RandomForestModel
-from src.evaluator import calculate_metrics, compare_models
+from src.evaluator import calculate_metrics, compare_models, get_top_features_across_models
 
 def run_experiment(root_dir: str):
     """
@@ -22,10 +24,8 @@ def run_experiment(root_dir: str):
     test_data['text'] = test_data['text'].apply(clean_text)
 
     # Step 3: Extract features (try both unigrams and bigrams)
-    X_train_uni, feature_names_uni = extract_features(train_data['text'], bigrams=False)
-    X_test_uni, _ = extract_features(test_data['text'], bigrams=False)
-    X_train_bi, feature_names_bi = extract_features(train_data['text'], bigrams=True)
-    X_test_bi, _ = extract_features(test_data['text'], bigrams=True)
+    X_train_uni, X_test_uni, vectorizer_uni, feature_names_uni = extract_features(train_data['text'], test_data['text'], bigrams=False, use_tfidf=True)
+    X_train_bi, X_test_bi, vectorizer_bi, feature_names_bi = extract_features(train_data['text'], test_data['text'], bigrams=True, use_tfidf=True)
     y_train = train_data['label']
     y_test = test_data['label']
 
@@ -62,5 +62,11 @@ def run_experiment(root_dir: str):
     
     # Step 7: Compare models
     compare_models(results)
+
+    # Step 8: Get top features
+    print("Top features for unigrams:")
+    get_top_features_across_models(models, feature_names_uni, top_n=10)
+    print("\nTop features for bigrams:")
+    get_top_features_across_models(models, feature_names_bi, top_n=10)
     
     return results

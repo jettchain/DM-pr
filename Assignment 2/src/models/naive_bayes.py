@@ -1,4 +1,5 @@
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import GridSearchCV
 from .base_model import BaseModel
 
 class NaiveBayesClassifier(BaseModel):
@@ -21,14 +22,11 @@ class NaiveBayesClassifier(BaseModel):
         """
         Tunes hyperparameters (alpha for smoothing) using cross-validation.
         """
-        # Optionally perform a grid search for alpha values
-        # Example:
-        # from sklearn.model_selection import GridSearchCV
-        # param_grid = {'alpha': [0.01, 0.1, 1, 10]}
-        # grid_search = GridSearchCV(self.model, param_grid, cv=5)
-        # grid_search.fit(X, y)
-        # self.model = grid_search.best_estimator_
-        pass
+        param_grid = {'alpha': [0.01, 0.1, 1, 10]}
+        grid_search = GridSearchCV(self.model, param_grid, cv=5)
+        grid_search.fit(X, y)
+        self.model = grid_search.best_estimator_
+
 
     def get_important_features(self):
         """

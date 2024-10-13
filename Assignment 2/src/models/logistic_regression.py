@@ -1,9 +1,14 @@
 from sklearn.linear_model import LogisticRegressionCV
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 from .base_model import BaseModel
 
 class LogisticRegressionClassifier(BaseModel):
     def __init__(self):
-        self.model = LogisticRegressionCV(penalty='l1', solver='saga', cv=5, max_iter=1000)
+        self.model = make_pipeline(
+            StandardScaler(with_mean=False),
+            LogisticRegressionCV(penalty='l1', solver='saga', cv=10, max_iter=5000)
+        )
 
     def train(self, X_train, y_train):
         """
@@ -28,4 +33,4 @@ class LogisticRegressionClassifier(BaseModel):
         """
         Retrieves the features with non-zero coefficients as the most important ones.
         """
-        return self.model.coef_
+        return self.model.named_steps['logisticregressioncv'].coef_

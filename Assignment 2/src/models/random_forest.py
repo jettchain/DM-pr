@@ -26,7 +26,7 @@ class RandomForestModel(BaseModel):
             'n_estimators': [100, 200, 500],
             'max_features': ['sqrt', 'log2']
         }
-        grid_search = GridSearchCV(self.model, param_grid, cv=5)
+        grid_search = GridSearchCV(self.model, param_grid, cv=10)
         grid_search.fit(X, y)
         self.model = grid_search.best_estimator_
 

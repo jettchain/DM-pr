@@ -23,7 +23,7 @@ class DecisionTreeModel(BaseModel):
         Tunes hyperparameters for the Decision Tree model, such as the cost-complexity pruning parameter alpha.
         """
         param_grid = {'ccp_alpha': [0.0, 0.01, 0.02, 0.05]}
-        grid_search = GridSearchCV(self.model, param_grid, cv=5)
+        grid_search = GridSearchCV(self.model, param_grid, cv=10)
         grid_search.fit(X, y)
         self.model = grid_search.best_estimator_
 
