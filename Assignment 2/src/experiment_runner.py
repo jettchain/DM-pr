@@ -45,15 +45,20 @@ def run_experiment(root_dir: str):
     results = {}
     for name, model in models.items():
         print(f"Training {name}...")
-        # Choose the appropriate feature set based on the model name
+        # Choose the appropriate feature set and ngram_type based on the model name
         if "Bigrams" in name:
-            model.tune_hyperparameters(X_train_bi, y_train)
-            model.train(X_train_bi, y_train)
-            y_pred = model.predict(X_test_bi)
+            X_train = X_train_bi
+            X_test = X_test_bi
+            ngram_type = 'bi'
         else:
-            model.tune_hyperparameters(X_train_uni, y_train)
-            model.train(X_train_uni, y_train)
-            y_pred = model.predict(X_test_uni)
+            X_train = X_train_uni
+            X_test = X_test_uni
+            ngram_type = 'uni'
+        
+        # Tune hyperparameters and train the model
+        model.tune_hyperparameters(X_train, y_train, ngram_type=ngram_type)
+        model.train(X_train, y_train, ngram_type=ngram_type)
+        y_pred = model.predict(X_test)
         
         # Step 6: Evaluate the model
         metrics = calculate_metrics(y_test, y_pred)
@@ -65,8 +70,8 @@ def run_experiment(root_dir: str):
 
     # Step 8: Get top features
     print("Top features for unigrams:")
-    get_top_features_across_models(models, feature_names_uni, top_n=10)
+    get_top_features_across_models(models, feature_names_uni)
     print("\nTop features for bigrams:")
-    get_top_features_across_models(models, feature_names_bi, top_n=10)
+    get_top_features_across_models(models, feature_names_bi)
     
     return results

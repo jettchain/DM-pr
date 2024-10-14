@@ -1,6 +1,7 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from collections import defaultdict
 import numpy as np
+import warnings
 
 def calculate_metrics(y_true, y_pred):
     """
@@ -48,53 +49,50 @@ def aggregate_feature_importance(feature_indices, feature_scores, feature_import
     for idx, score in zip(feature_indices, feature_scores):
         feature_importance_dict[idx] += score
 
-def get_top_features_across_models(models, feature_names, top_n=10):
-    """
-    Aggregates and prints the top N most important features across all models for fake and genuine reviews.
-    
-    Args:
-        models (list): List of trained models.
-        feature_names (list): List of feature names.
-        top_n (int): Number of top features to return for each class.
-    """
-    # Initialize dictionaries to accumulate importance scores
+def get_top_features_across_models(models, feature_names, top_n=5):
     fake_feature_importance = defaultdict(float)
     genuine_feature_importance = defaultdict(float)
     
-    for model in models:
-        # Check if the model is a valid object with the get_important_features method
+    for model_name, model in models.items():
         if not hasattr(model, 'get_important_features') or not callable(getattr(model, 'get_important_features')):
-            print(f"Warning: Skipping invalid model object: {model}")
+            print(f"Warning: Skipping invalid model object: {model_name}")
             continue
 
-        important_features =   model.get_important_features()
+        important_features = model.get_important_features()
         
-        if hasattr(model, 'feature_importances_'):
-            # For tree-based models
+        if isinstance(important_features, dict):
+            for idx in important_features['Deceptive']:
+                fake_feature_importance[idx] += 1
+            for idx in important_features['Truthful']:
+                genuine_feature_importance[idx] += 1
+        else:
             sorted_indices = important_features.argsort()
             top_fake_indices = sorted_indices[-top_n:]
             top_genuine_indices = sorted_indices[:top_n]
-            aggregate_feature_importance(top_fake_indices, important_features[top_fake_indices], fake_feature_importance)
-            aggregate_feature_importance(top_genuine_indices, important_features[top_genuine_indices], genuine_feature_importance)
-        else:
-            # Assuming model returns a dict with fake and genuine features as indices
-            top_fake_indices = important_features['fake']
-            top_genuine_indices = important_features['genuine']
-            aggregate_feature_importance(top_fake_indices, np.ones(len(top_fake_indices)), fake_feature_importance)
-            aggregate_feature_importance(top_genuine_indices, np.ones(len(top_genuine_indices)), genuine_feature_importance)
+            for idx in top_fake_indices:
+                fake_feature_importance[idx] += important_features[idx]
+            for idx in top_genuine_indices:
+                genuine_feature_importance[idx] += important_features[idx]
     
-    # Sort the features by aggregated importance scores
     top_fake_features = sorted(fake_feature_importance.items(), key=lambda x: x[1], reverse=True)[:top_n]
     top_genuine_features = sorted(genuine_feature_importance.items(), key=lambda x: x[1], reverse=True)[:top_n]
     
-    # Print the top features across all models
+    fake_features = [feature_names[i] for i, _ in top_fake_features if i < len(feature_names)]
+    genuine_features = [feature_names[i] for i, _ in top_genuine_features if i < len(feature_names)]
+
+    # Ensure we always have exactly top_n features
+    while len(fake_features) < top_n:
+        fake_features.append("N/A")
+    while len(genuine_features) < top_n:
+        genuine_features.append("N/A")
+
     print(f"\nTop {top_n} features indicative of fake reviews across models:")
-    print(", ".join([feature_names[i] for i, _ in top_fake_features]))
+    print(", ".join(fake_features))
     
     print(f"\nTop {top_n} features indicative of genuine reviews across models:")
-    print(", ".join([feature_names[i] for i, _ in top_genuine_features]))
+    print(", ".join(genuine_features))
 
     return {
-        "fake": [feature_names[i] for i, _ in top_fake_features],
-        "genuine": [feature_names[i] for i, _ in top_genuine_features]
+        "fake": fake_features[:top_n],
+        "genuine": genuine_features[:top_n]
     }

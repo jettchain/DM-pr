@@ -1,10 +1,13 @@
+import os
+import joblib
 from abc import ABC, abstractmethod
 
 class BaseModel(ABC):
     @abstractmethod
-    def train(self, X_train, y_train):
+    def train(self, X_train, y_train, ngram_type='uni', override=False):
         """
         Trains the model on the provided training data.
+        If saved weights exist, loads them instead of retraining.
         """
         pass
 
