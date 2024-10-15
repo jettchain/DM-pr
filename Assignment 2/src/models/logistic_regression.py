@@ -12,7 +12,7 @@ class LogisticRegressionClassifier(BaseModel):
             LogisticRegressionCV(penalty='l1', solver='saga', cv=10, max_iter=5000))
         self.model_filename = None
 
-    def train(self, X_train, y_train, ngram_type='uni', override=False):
+    def train(self, X_train, y_train, ngram_type='uni', override=False, use_feature_selection=False):
         """
         Trains the Logistic Regression model on the training data.
         Checks for existing saved weights before training.
@@ -27,6 +27,7 @@ class LogisticRegressionClassifier(BaseModel):
             self.model = joblib.load(self.model_filename)
         else:
             print("Training Logistic Regression model...")
+            # Note: Logistic Regression doesn't use feature selection in this implementation
             self.model.fit(X_train, y_train)
             joblib.dump(self.model, self.model_filename)
             print(f"Logistic Regression model weights saved to {self.model_filename}")
@@ -43,6 +44,7 @@ class LogisticRegressionClassifier(BaseModel):
         This method is kept for consistency with the BaseModel interface but does nothing.
         """
         print("LogisticRegressionCV handles tuning internally during fitting. No separate tuning step needed.")
+        print("Optimal parameters for Logistic Regression will be determined during training.")
 
     def get_important_features(self):
         """

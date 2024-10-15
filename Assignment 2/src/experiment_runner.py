@@ -6,7 +6,10 @@ from src.models.naive_bayes import NaiveBayesClassifier
 from src.models.logistic_regression import LogisticRegressionClassifier
 from src.models.decision_tree import DecisionTreeModel
 from src.models.random_forest import RandomForestModel
-from src.evaluator import calculate_metrics, compare_models, get_top_features_across_models
+from src.evaluator import (
+    calculate_metrics, compare_models, get_top_features_across_models,
+    compare_accuracies, answer_questions, visualize_results
+)
 
 def run_experiment(root_dir: str):
     """
@@ -45,19 +48,15 @@ def run_experiment(root_dir: str):
     results = {}
     for name, model in models.items():
         print(f"Training {name}...")
-        # Choose the appropriate feature set and ngram_type based on the model name
         if "Bigrams" in name:
-            X_train = X_train_bi
-            X_test = X_test_bi
+            X_train, X_test = X_train_bi, X_test_bi
             ngram_type = 'bi'
         else:
-            X_train = X_train_uni
-            X_test = X_test_uni
+            X_train, X_test = X_train_uni, X_test_uni
             ngram_type = 'uni'
         
-        # Tune hyperparameters and train the model
         model.tune_hyperparameters(X_train, y_train, ngram_type=ngram_type)
-        model.train(X_train, y_train, ngram_type=ngram_type)
+        model.train(X_train, y_train, ngram_type=ngram_type, use_feature_selection=True)
         y_pred = model.predict(X_test)
         
         # Step 6: Evaluate the model
@@ -68,10 +67,24 @@ def run_experiment(root_dir: str):
     # Step 7: Compare models
     compare_models(results)
 
-    # Step 8: Get top features
-    print("Top features for unigrams:")
-    get_top_features_across_models(models, feature_names_uni)
+    # Step 8: Visualize results
+    visualize_results(results, models, X_test_uni, y_test)
+
+    # Step 9: Get top features
+    print("\nTop features for unigrams:")
+    uni_top_features = get_top_features_across_models({k: v for k, v in models.items() if "Unigrams" in k}, feature_names_uni)
     print("\nTop features for bigrams:")
-    get_top_features_across_models(models, feature_names_bi)
+    bi_top_features = get_top_features_across_models({k: v for k, v in models.items() if "Bigrams" in k}, feature_names_bi)
+    
+    # Step 10: Statistical comparison of accuracies
+    print("\nStatistical comparison of accuracies:")
+    compare_accuracies(results)
+    
+    # Step 11: Answer experiment questions
+    answer_questions(results, uni_top_features, bi_top_features)
     
     return results
+
+if __name__ == "__main__":
+    root_dir = "Assignment 2/op_spam_v1.4/op_spam_v1.4/"
+    run_experiment(root_dir)

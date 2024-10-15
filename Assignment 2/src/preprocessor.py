@@ -4,8 +4,15 @@ import pandas as pd
 
 def clean_text(text: str) -> str:
     """
-    Cleans the input text by performing standard text preprocessing steps,
-    including lowercasing, removing special characters, and extra whitespace.
+    Cleans the input text by performing standard text preprocessing steps.
+    
+    Choices made:
+    1. Convert to lowercase: Standardizes all text to reduce vocabulary size.
+    2. Remove special characters and numbers: Focus on alphabetic content only.
+    3. Remove extra whitespace: Standardize spacing between words.
+    
+    We don't perform stemming or lemmatization to preserve the original form of words,
+    which might be important for detecting nuances in fake vs. genuine reviews.
     
     Args:
         text (str): Raw input text to clean.

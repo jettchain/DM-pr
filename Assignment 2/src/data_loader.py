@@ -3,7 +3,7 @@ import pandas as pd
 
 def load_and_split_data(root_dir: str) -> tuple:
     """
-    Loads data from the specified directory structure and splits it into
+    Loads negative polarity data from the specified directory structure and splits it into
     training and test sets based on the fold structure.
     
     Folds 1-4 are used for training and hyperparameter tuning (640 reviews),
@@ -14,34 +14,31 @@ def load_and_split_data(root_dir: str) -> tuple:
     train_data = []
     test_data = []
 
-    # Define categories for the polarity folders
-    categories = {
-        "negative_polarity": ["deceptive_from_MTurk", "truthful_from_Web"],
-        "positive_polarity": ["deceptive_from_MTurk", "truthful_from_TripAdvisor"]
-    }
+    # We only focus on negative polarity reviews
+    polarity = "negative_polarity"
+    categories = ["deceptive_from_MTurk", "truthful_from_Web"]
 
-    # Loop through each category and polarity folder
-    for polarity, folders in categories.items():
-        for folder in folders:
-            label = 1 if "deceptive" in folder else 0  # Label: 1 for deceptive, 0 for truthful
-            folder_path = os.path.join(root_dir, polarity, folder)
+    # Loop through each category in the negative polarity folder
+    for category in categories:
+        label = 1 if "deceptive" in category else 0  # Label: 1 for deceptive, 0 for truthful  
+        folder_path = os.path.join(root_dir, polarity, category)
 
-            # Separate data from folds 1-4 into train_data and fold 5 into test_data
-            for fold in os.listdir(folder_path):
-                fold_path = os.path.join(folder_path, fold)
+        # Separate data from folds 1-4 into train_data and fold 5 into test_data
+        for fold in os.listdir(folder_path):
+            fold_path = os.path.join(folder_path, fold)
 
-                # Determine if this fold belongs to training or test set
-                target_list = train_data if fold != "fold5" else test_data
+            # Determine if this fold belongs to training or test set
+            target_list = train_data if fold != "fold5" else test_data
 
-                # Check if fold_path is a directory
-                if os.path.isdir(fold_path):
-                    for file_name in os.listdir(fold_path):
-                        file_path = os.path.join(fold_path, file_name)
-                        
-                        # Read the text file content
-                        with open(file_path, 'r') as file:
-                            text = file.read()
-                            target_list.append([text, label])
+            # Check if fold_path is a directory
+            if os.path.isdir(fold_path):
+                for file_name in os.listdir(fold_path):
+                    file_path = os.path.join(fold_path, file_name)
+                    
+                    # Read the text file content
+                    with open(file_path, 'r') as file:
+                        text = file.read()
+                        target_list.append([text, label])
 
     # Convert to DataFrames
     train_df = pd.DataFrame(train_data, columns=['text', 'label'])
