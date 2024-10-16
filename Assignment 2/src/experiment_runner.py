@@ -1,5 +1,3 @@
-# src/experiment_runner.py
-
 from src.data_loader import load_and_split_data
 from src.preprocessor import clean_text, extract_features
 from src.models.naive_bayes import NaiveBayesClassifier
@@ -10,6 +8,7 @@ from src.evaluator import (
     calculate_metrics, compare_models, get_top_features_across_models,
     compare_accuracies, answer_questions, visualize_results
 )
+import os
 
 def run_experiment(root_dir: str):
     """
@@ -44,7 +43,7 @@ def run_experiment(root_dir: str):
         "Random Forest Bigrams": RandomForestModel()
     }
     
-    # Step 5: Train and evaluate models with both unigrams and bigrams
+    # Step 5: Train models and collect results
     results = {}
     for name, model in models.items():
         print(f"Training {name}...")
@@ -59,29 +58,22 @@ def run_experiment(root_dir: str):
         model.train(X_train, y_train, ngram_type=ngram_type, use_feature_selection=True)
         y_pred = model.predict(X_test)
         
-        # Step 6: Evaluate the model
         metrics = calculate_metrics(y_test, y_pred)
         results[name] = metrics
         print(f"{name} Metrics: {metrics}")
-    
-    # Step 7: Compare models
-    compare_models(results)
 
-    # Step 8: Visualize results
-    visualize_results(results, models, X_test_uni, y_test)
+    # Step 6: Evaluate and visualize results
+    results_dir = os.path.join("Assignment 2", "results")
+    os.makedirs(results_dir, exist_ok=True)
 
-    # Step 9: Get top features
-    print("\nTop features for unigrams:")
-    uni_top_features = get_top_features_across_models({k: v for k, v in models.items() if "Unigrams" in k}, feature_names_uni)
-    print("\nTop features for bigrams:")
-    bi_top_features = get_top_features_across_models({k: v for k, v in models.items() if "Bigrams" in k}, feature_names_bi)
+    compare_models(results, save_dir=results_dir)
+    visualize_results(results, models, X_test_uni, X_test_bi, y_test, results_dir)
+
+    uni_top_features = get_top_features_across_models({k: v for k, v in models.items() if "Unigrams" in k}, feature_names_uni, save_dir=results_dir)
+    bi_top_features = get_top_features_across_models({k: v for k, v in models.items() if "Bigrams" in k}, feature_names_bi, save_dir=results_dir)
     
-    # Step 10: Statistical comparison of accuracies
-    print("\nStatistical comparison of accuracies:")
-    compare_accuracies(results)
-    
-    # Step 11: Answer experiment questions
-    answer_questions(results, uni_top_features, bi_top_features)
+    compare_accuracies(results, save_dir=results_dir)
+    answer_questions(results, uni_top_features, bi_top_features, save_dir=results_dir)
     
     return results
 

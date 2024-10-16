@@ -3,16 +3,11 @@ from sklearn.model_selection import GridSearchCV
 from .base_model import BaseModel
 import os
 import joblib
-from joblib import Memory
 import numpy as np
-from itertools import product
-from joblib import Parallel, delayed
-from tqdm import tqdm
-from sklearn.metrics import make_scorer, accuracy_score
-from sklearn.pipeline import Pipeline
+
 
 class DecisionTreeModel(BaseModel):
-    os.environ['NUMEXPR_MAX_THREADS'] = '10'  # Set to 10 threads
+    # Set to 10 threads
     def __init__(self):
         self.model = DecisionTreeClassifier()
 
@@ -43,7 +38,7 @@ class DecisionTreeModel(BaseModel):
         """
         return self.model.predict(X_test)
 
-    def tune_hyperparameters(self, X, y, ngram_type='uni', override=False, n_jobs=10, verbose=3):
+    def tune_hyperparameters(self, X, y, ngram_type='uni', override=False, n_jobs=-1, verbose=3):
         """
         Tunes hyperparameters for the Decision Tree model using GridSearchCV with cross-validation
         and parallel processing. Saves the best hyperparameter values.
@@ -105,12 +100,6 @@ class DecisionTreeModel(BaseModel):
 
         # Retrieve the best parameters and score
         best_params = grid_search.best_params_
-        best_score = grid_search.best_score_
-
-        print(f"Best Cross-Validation Score: {best_score:.4f}")
-        print("Best Parameters for Decision Tree:", best_params)
-
-        # Update the model with the best parameters
         self.model.set_params(**best_params)
 
         # Save the best parameters to the parameter file

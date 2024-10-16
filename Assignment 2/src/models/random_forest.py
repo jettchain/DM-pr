@@ -4,7 +4,6 @@ from .base_model import BaseModel
 import os
 import joblib
 from joblib import Parallel, delayed
-from tqdm import tqdm
 import numpy as np
 from itertools import product
 
@@ -40,7 +39,7 @@ class RandomForestModel(BaseModel):
         """
         return self.model.predict(X_test)
 
-    def tune_hyperparameters(self, X, y, ngram_type='uni', override=False, n_jobs=10, verbose=1):
+    def tune_hyperparameters(self, X, y, ngram_type='uni', override=False, n_jobs=-1, verbose=1):
         """
         Tunes hyperparameters for the Random Forest model using Out of Bag (OOB) evaluation
         and saves the best hyperparameter values.
@@ -53,9 +52,7 @@ class RandomForestModel(BaseModel):
             n_jobs (int): Number of parallel jobs. -1 means using all processors.
             verbose (int): Level of verbosity.
         """
-        from sklearn.base import clone
-
-    # Define the weights directory and parameter filename
+        # Define the weights directory and parameter filename
         weights_dir = "Assignment 2/src/models/weights"
         os.makedirs(weights_dir, exist_ok=True)
         self.param_filename = os.path.join(weights_dir, f"random_forest_params_{ngram_type}.pkl")
@@ -79,80 +76,46 @@ class RandomForestModel(BaseModel):
             }
 
             # Create all combinations of hyperparameters
-            all_params = list(product(
-                param_grid['n_estimators'],
-                param_grid['criterion'],
-                param_grid['max_depth'],
-                param_grid['min_samples_split'],
-                param_grid['min_samples_leaf'],
-                param_grid['max_features']
-            ))
+            all_params = list(product(*param_grid.values()))
 
             if verbose:
                 print(f"Total hyperparameter combinations to evaluate: {len(all_params)}")
 
             # Function to evaluate a single set of hyperparameters
             def evaluate_params(params):
-                n_estimators, criterion, max_depth, min_samples_split, min_samples_leaf, max_features = params
-                rf = clone(self.model)
-                rf.set_params(
-                    n_estimators=n_estimators,
-                    criterion=criterion,
-                    max_depth=max_depth,
-                    min_samples_split=min_samples_split,
-                    min_samples_leaf=min_samples_leaf,
-                    max_features=max_features,
-                    bootstrap=True,  # Required for OOB
-                    oob_score=True,
-                    n_jobs=1  # To prevent nested parallelism
-                )
+                rf = RandomForestClassifier(oob_score=True, n_jobs=1, **dict(zip(param_grid.keys(), params)))
                 try:
                     rf.fit(X, y)
                     oob_score = rf.oob_score_
                 except Exception as e:
                     if verbose:
                         print(f"Error with params {params}: {e}")
-                    oob_score = -1  # Assign a poor score in case of failure
-
-                return (oob_score, {
-                    'n_estimators': n_estimators,
-                    'criterion': criterion,
-                    'max_depth': max_depth,
-                    'min_samples_split': min_samples_split,
-                    'min_samples_leaf': min_samples_leaf,
-                    'max_features': max_features,
-                    'bootstrap': True,
-                    'oob_score': True
-                })
+                    oob_score = -1
+                return (oob_score, dict(zip(param_grid.keys(), params)))
 
             # Use Parallel to evaluate hyperparameters in parallel
             results = Parallel(n_jobs=n_jobs, verbose=verbose)(
-                delayed(evaluate_params)(params) for params in tqdm(all_params, disable=not verbose)
+                delayed(evaluate_params)(params) for params in all_params
             )
 
-            if results is not None:
-                best_params = None
-                best_oob_score = -1.0
-                for oob_score, params in results:
-                    if oob_score > best_oob_score:
-                        best_oob_score = oob_score
-                        best_params = params
+            if results:
+                best_params = max(results, key=lambda x: x[0])[1]
+                best_oob_score = max(results, key=lambda x: x[0])[0]
             else:
                 print("Hyperparameter tuning failed. Using default parameters.")
                 best_params = None
+                best_oob_score = -1
 
             # Set the best parameters and save them
             print(f"Best OOB Score: {best_oob_score}")
-            if best_params is not None:
+            if best_params:
                 print("Best Parameters:", best_params)
                 self.model.set_params(**best_params)
-                joblib.dump(best_params, self.param_filename)
+                joblib.dump(best_params, self.param_filename)  
                 print(f"Tuned hyperparameters saved to {self.param_filename}")
                 print(f"Optimal parameters for Random Forest: {best_params}")
             else:
                 print("No improvement found. Using default parameters.")
-
-
 
     def get_important_features(self):
         """

@@ -10,6 +10,8 @@ def main():
     """
     Main function to run the experiment with a specified dataset.
     """
+    os.environ['NUMEXPR_MAX_THREADS'] = '12'
+
     # Get the directory of the current script
     script_dir = os.path.dirname(os.path.abspath(__file__))
     
@@ -20,6 +22,8 @@ def main():
     print("Starting experiment...")  
     print(f"Using dataset at: {root_dir}")
     results = run_experiment(root_dir)
+
+    
     
     # Display the final results
     print("\nFinal Results:")
