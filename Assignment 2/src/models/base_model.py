@@ -31,3 +31,10 @@ class BaseModel(ABC):
         Returns the most important features for interpretation.
         """
         pass
+
+    @abstractmethod
+    def predict_proba(self, X_test):
+        """
+        Predicts class probabilities for the provided test data.
+        """
+        pass

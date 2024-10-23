@@ -22,7 +22,7 @@ def main():
     print("Starting experiment...")  
     print(f"Using dataset at: {root_dir}")
     results = run_experiment(root_dir)
-
+   
     
     
     # Display the final results

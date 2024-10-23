@@ -38,6 +38,12 @@ class DecisionTreeModel(BaseModel):
         """
         return self.model.predict(X_test)
 
+    def predict_proba(self, X_test):
+        """
+        Predicts class probabilities for the test data.
+        """
+        return self.model.predict_proba(X_test)
+
     def tune_hyperparameters(self, X, y, ngram_type='uni', override=False, n_jobs=-1, verbose=3):
         """
         Tunes hyperparameters for the Decision Tree model using GridSearchCV with cross-validation

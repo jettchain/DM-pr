@@ -23,21 +23,31 @@ class RandomForestModel(BaseModel):
         os.makedirs(weights_dir, exist_ok=True)
         self.model_filename = os.path.join(weights_dir, f"random_forest_model_{ngram_type}.pkl")
 
+        print(f"Attempting to train/load Random Forest model for {ngram_type}")
+        print(f"Model filename: {self.model_filename}") 
+
         if os.path.exists(self.model_filename) and not override:
             print(f"Loading Random Forest model weights from {self.model_filename}")
             self.model = joblib.load(self.model_filename)
         else:
-            print("Training Random Forest model...")
-            # Note: Random Forest doesn't use feature selection in this implementation
+            print(f"Training Random Forest model for {ngram_type}...")
             self.model.fit(X_train, y_train)
             joblib.dump(self.model, self.model_filename)
             print(f"Random Forest model weights saved to {self.model_filename}")
+
+        print(f"Random Forest model for {ngram_type} is ready")
 
     def predict(self, X_test):
         """
         Predicts the labels for the test data.
         """
         return self.model.predict(X_test)
+
+    def predict_proba(self, X_test):
+        """
+        Predicts class probabilities for the test data.
+        """
+        return self.model.predict_proba(X_test)
 
     def tune_hyperparameters(self, X, y, ngram_type='uni', override=False, n_jobs=-1, verbose=1):
         """

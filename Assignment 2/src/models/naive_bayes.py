@@ -51,6 +51,17 @@ class NaiveBayesClassifier(BaseModel):
         else:
             return self.model.predict(X_test)
 
+    def predict_proba(self, X_test):
+        """
+        Predicts class probabilities for the test data.
+        Applies feature selection if a feature selector is available.
+        """
+        if self.feature_selector:
+            X_test_selected = self.feature_selector.transform(X_test)
+            return self.model.predict_proba(X_test_selected)
+        else:
+            return self.model.predict_proba(X_test)
+
     def tune_hyperparameters(self, X, y, ngram_type='uni', override=False, n_jobs=-1, verbose=1):
         weights_dir = "Assignment 2/src/models/weights"
         os.makedirs(weights_dir, exist_ok=True)
@@ -76,12 +87,15 @@ class NaiveBayesClassifier(BaseModel):
 
             def evaluate_params(alpha, num_features):
                 try:
-                    selector = SelectKBest(chi2, k=num_features)
-                    X_selected = selector.fit_transform(X, y)
+                    # Make a copy of X to ensure it's writable
+                    X_copy = X.copy()
+                    selector = SelectKBest(chi2, k=min(num_features, X_copy.shape[1]))
+                    X_selected = selector.fit_transform(X_copy, y)
                     nb = MultinomialNB(alpha=alpha)
-                    scores = cross_val_score(nb, X_selected, y, cv=10, scoring='accuracy', n_jobs=n_jobs)
+                    scores = cross_val_score(nb, X_selected, y, cv=10, scoring='accuracy', n_jobs=1)
                     score = np.mean(scores)
                 except Exception as e:
+                    print(f"Error with params alpha={alpha}, num_features={num_features}: {e}")
                     score = -np.inf
                 return (score, {'alpha': alpha}, num_features)
 
