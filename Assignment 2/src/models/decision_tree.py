@@ -1,41 +1,57 @@
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import GridSearchCV
 from .base_model import BaseModel
+from sklearn.metrics import accuracy_score
 import os
 import joblib
 import numpy as np
 
 
 class DecisionTreeModel(BaseModel):
-    # Set to 10 threads
     def __init__(self):
         self.model = DecisionTreeClassifier()
+        self.accuracy_scores = []
+        self.hyperparams = None
+        self.model_filename = None
 
-
-    def train(self, X_train, y_train, ngram_type='uni', override=False, use_feature_selection=False):
-        """
-        Trains the Decision Tree model on the training data.
-        Checks for existing saved weights before training.
-        """
-        # Define the weights directory and model filename
+    def train(self, X_train, y_train, X_test, y_test, ngram_type='uni', num_runs=50, override=False):
+        # Define directories and filenames
         weights_dir = "Assignment 2/src/models/weights"
         os.makedirs(weights_dir, exist_ok=True)
         self.model_filename = os.path.join(weights_dir, f"decision_tree_model_{ngram_type}.pkl")
+        hyperparams_filename = os.path.join(weights_dir, f"decision_tree_params_{ngram_type}.pkl")
 
+        # Load hyperparameters if available
+        if self.hyperparams is None:
+            if os.path.exists(hyperparams_filename):
+                self.hyperparams = joblib.load(hyperparams_filename)
+            else:
+                raise ValueError("Hyperparameters not found. Please run tune_hyperparameters before training.")
+
+        # Load the entire class instance if available
         if os.path.exists(self.model_filename) and not override:
-            print(f"Loading Decision Tree model weights from {self.model_filename}")
-            self.model = joblib.load(self.model_filename)
+            # Load the entire class instance
+            loaded_self = joblib.load(self.model_filename)
+            self.__dict__.update(loaded_self.__dict__)
         else:
-            print("Training Decision Tree model...")
-            # Note: Decision Tree doesn't use feature selection in this implementation
-            self.model.fit(X_train, y_train)
-            joblib.dump(self.model, self.model_filename)
-            print(f"Decision Tree model weights saved to {self.model_filename}")
+            self.accuracy_scores = []
+            for _ in range(num_runs):
+                # Initialize a new model for each run
+                model = DecisionTreeClassifier(**self.hyperparams, random_state=np.random.randint(0, 10000))
+                # Train the model
+                model.fit(X_train, y_train)
+                # Predict on test set
+                y_pred = model.predict(X_test)
+                # Compute accuracy
+                accuracy = accuracy_score(y_test, y_pred)
+                self.accuracy_scores.append(accuracy)
+                self.model = model  # Save the last model
+
+            # Save the entire class instance
+            joblib.dump(self, self.model_filename)
+
 
     def predict(self, X_test):
-        """
-        Predicts the labels for the test data.
-        """
         return self.model.predict(X_test)
 
     def predict_proba(self, X_test):
@@ -117,13 +133,14 @@ class DecisionTreeModel(BaseModel):
             print(f"Failed to save parameters to {self.param_filename}: {e}")
 
     def get_important_features(self):
-        """
-        Returns the feature importances from the Decision Tree.
-        """
-        importances = self.model.feature_importances_
-        sorted_idx = np.argsort(importances)
-        top_indices = sorted_idx[-5:]  # Top 5 important features
-        return {
-            "Deceptive": top_indices,
-            "Truthful": sorted_idx[:5]  # Bottom 5 important features (as a proxy for genuine)
-        }
+        if self.model is not None:
+            importances = self.model.feature_importances_
+            indices = np.argsort(importances)[::-1]
+            deceptive_indices = indices[:5]
+            truthful_indices = indices[-5:]
+            return {
+                "Deceptive": deceptive_indices,
+                "Truthful": truthful_indices
+            }
+        else:
+            return {"Deceptive": [], "Truthful": []}

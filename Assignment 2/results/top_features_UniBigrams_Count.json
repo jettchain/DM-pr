@@ -1,0 +1,66 @@
+{
+  "Naive Bayes UniBigrams_Count": {
+    "Deceptive": [
+      "chicago millennium",
+      "sheraton chicago",
+      "millennium knickerbocker",
+      "and towers",
+      "the counter"
+    ],
+    "Truthful": [
+      "stated",
+      "fridge",
+      "sofa",
+      "the conference",
+      "priceline"
+    ]
+  },
+  "Logistic Regression UniBigrams_Count": {
+    "Deceptive": [
+      "smell",
+      "recently",
+      "at the",
+      "chicago hotel",
+      "chicago"
+    ],
+    "Truthful": [
+      "location",
+      "great",
+      "the location",
+      "star",
+      "open"
+    ]
+  },
+  "Decision Tree UniBigrams_Count": {
+    "Deceptive": [
+      "was",
+      "location",
+      "chicago",
+      "all",
+      "are"
+    ],
+    "Truthful": [
+      "refund of",
+      "refund numerous",
+      "refund my",
+      "refund for",
+      "aaa"
+    ]
+  },
+  "Random Forest UniBigrams_Count": {
+    "Deceptive": [
+      "chicago",
+      "luxury",
+      "location",
+      "my",
+      "smell"
+    ],
+    "Truthful": [
+      "precise indeed",
+      "precise",
+      "precious free",
+      "precious",
+      "aaa"
+    ]
+  }
+}

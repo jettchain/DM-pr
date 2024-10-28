@@ -1,0 +1,12 @@
+{
+  "q1": {
+    "nb_accuracy": 0.8375,
+    "lr_accuracy": 0.575,
+    "better_model": "Naive Bayes"
+  },
+  "q2": {
+    "rf_accuracy": 0.83125,
+    "best_linear_accuracy": 0.8375,
+    "improvement": false
+  }
+}

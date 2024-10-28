@@ -1,0 +1,129 @@
+{
+  "Naive Bayes Bigrams_Count": {
+    "Deceptive": [
+      "chicago millennium",
+      "sheraton chicago",
+      "the counter",
+      "and towers",
+      "millennium knickerbocker"
+    ],
+    "Truthful": [
+      "we returned",
+      "general manager",
+      "four seasons",
+      "prior to",
+      "the conference"
+    ]
+  },
+  "Naive Bayes UniBigrams_Count": {
+    "Deceptive": [
+      "concern of",
+      "then sat",
+      "once finally",
+      "answer their",
+      "was little"
+    ],
+    "Truthful": [
+      "travelzoo night",
+      "heard sirens",
+      "to customer",
+      "was interesting",
+      "so frustrated"
+    ]
+  },
+  "Logistic Regression Bigrams_Count": {
+    "Deceptive": [
+      "was not",
+      "my room",
+      "recently stayed",
+      "at the",
+      "chicago hotel"
+    ],
+    "Truthful": [
+      "the location",
+      "th floor",
+      "was great",
+      "the th",
+      "location is"
+    ]
+  },
+  "Logistic Regression UniBigrams_Count": {
+    "Deceptive": [
+      "throughout whole",
+      "stay you",
+      "bad even",
+      "computer and",
+      "complete flop"
+    ],
+    "Truthful": [
+      "noise even",
+      "hung on",
+      "wasnt any",
+      "traffic noise",
+      "restroom no"
+    ]
+  },
+  "Decision Tree Bigrams_Count": {
+    "Deceptive": [
+      "chicago hotel",
+      "at the",
+      "my room",
+      "was not",
+      "the food"
+    ],
+    "Truthful": [
+      "report problem",
+      "report of",
+      "report and",
+      "reply with",
+      "aaa one"
+    ]
+  },
+  "Decision Tree UniBigrams_Count": {
+    "Deceptive": [
+      "noise even",
+      "complete flop",
+      "almost hour",
+      "arrive when"
+    ],
+    "Truthful": [
+      "street after",
+      "streaked etc",
+      "stray bits",
+      "strawberries to",
+      "aaa one"
+    ]
+  },
+  "Random Forest Bigrams_Count": {
+    "Deceptive": [
+      "at the",
+      "chicago hotel",
+      "recently stayed",
+      "the location",
+      "was not"
+    ],
+    "Truthful": [
+      "floors the",
+      "at midnight",
+      "room making",
+      "chicago think",
+      "anywhere the"
+    ]
+  },
+  "Random Forest UniBigrams_Count": {
+    "Deceptive": [
+      "complete flop",
+      "notch and",
+      "noise even",
+      "our juice",
+      "throughout whole"
+    ],
+    "Truthful": [
+      "small refrigerator",
+      "small probably",
+      "small prewrapped",
+      "small portions",
+      "aaa one"
+    ]
+  }
+}

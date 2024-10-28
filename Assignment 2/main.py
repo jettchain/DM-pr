@@ -23,12 +23,6 @@ def main():
     print(f"Using dataset at: {root_dir}")
     results = run_experiment(root_dir)
    
-    
-    
-    # Display the final results
-    print("\nFinal Results:")
-    for model_name, metrics in results.items():
-        print(f"{model_name}: {metrics}")
 
 if __name__ == "__main__":
     main()

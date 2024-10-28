@@ -1,0 +1,129 @@
+{
+  "Naive Bayes Bigrams_TfIdf": {
+    "Deceptive": [
+      "chicago millennium",
+      "sheraton chicago",
+      "and towers",
+      "millennium knickerbocker",
+      "james chicago"
+    ],
+    "Truthful": [
+      "was covered",
+      "to cancel",
+      "my parents",
+      "prior to",
+      "the conference"
+    ]
+  },
+  "Naive Bayes UniBigrams_TfIdf": {
+    "Deceptive": [
+      "concern of",
+      "then sat",
+      "answer their",
+      "once finally",
+      "money on"
+    ],
+    "Truthful": [
+      "travelzoo night",
+      "heard sirens",
+      "to customer",
+      "was interesting",
+      "so frustrated"
+    ]
+  },
+  "Logistic Regression Bigrams_TfIdf": {
+    "Deceptive": [
+      "was not",
+      "recently stayed",
+      "my room",
+      "chicago hotel",
+      "at the"
+    ],
+    "Truthful": [
+      "the location",
+      "th floor",
+      "was great",
+      "we have",
+      "the th"
+    ]
+  },
+  "Logistic Regression UniBigrams_TfIdf": {
+    "Deceptive": [
+      "throughout whole",
+      "our juice",
+      "stay you",
+      "bad even",
+      "complete flop"
+    ],
+    "Truthful": [
+      "noise even",
+      "hung on",
+      "wasnt any",
+      "traffic noise",
+      "restroom no"
+    ]
+  },
+  "Decision Tree Bigrams_TfIdf": {
+    "Deceptive": [
+      "in chicago",
+      "to my",
+      "recently stayed",
+      "at the",
+      "my stay"
+    ],
+    "Truthful": [
+      "reported them",
+      "reported the",
+      "reported quality",
+      "reported my",
+      "aaa one"
+    ]
+  },
+  "Decision Tree UniBigrams_TfIdf": {
+    "Deceptive": [
+      "complete flop",
+      "hotel firstly",
+      "hotel general",
+      "hotel furniture"
+    ],
+    "Truthful": [
+      "street level",
+      "street in",
+      "street from",
+      "street for",
+      "aaa one"
+    ]
+  },
+  "Random Forest Bigrams_TfIdf": {
+    "Deceptive": [
+      "at the",
+      "my room",
+      "chicago hotel",
+      "was not",
+      "decided to"
+    ],
+    "Truthful": [
+      "notch service",
+      "notch treatment",
+      "notches its",
+      "note explaining",
+      "aaa one"
+    ]
+  },
+  "Random Forest UniBigrams_TfIdf": {
+    "Deceptive": [
+      "complete flop",
+      "bad even",
+      "noise even",
+      "our juice",
+      "throughout whole"
+    ],
+    "Truthful": [
+      "solve this",
+      "solution they",
+      "solution also",
+      "aaa one",
+      "work while"
+    ]
+  }
+}

@@ -5,32 +5,54 @@ from .base_model import BaseModel
 import os
 import joblib
 import numpy as np
+from sklearn.metrics import accuracy_score
+
 class LogisticRegressionClassifier(BaseModel):
     def __init__(self):
-        self.model = make_pipeline(
-            StandardScaler(with_mean=False),
-            LogisticRegressionCV(penalty='l1', solver='saga', cv=10, max_iter=5000))
+        self.model = LogisticRegressionCV()
+        self.scaler = None  # To store the scaler if used
+        self.accuracy_scores = []
+        self.hyperparams = None
         self.model_filename = None
 
-    def train(self, X_train, y_train, ngram_type='uni', override=False, use_feature_selection=False):
-        """
-        Trains the Logistic Regression model on the training data.
-        Checks for existing saved weights before training.
-        """
-        # Define the weights directory and model filename
+    def train(self, X_train, y_train, X_test, y_test, ngram_type='uni', num_runs=50, override=False):
+        # Define directories and filenames
         weights_dir = "Assignment 2/src/models/weights"
         os.makedirs(weights_dir, exist_ok=True)
         self.model_filename = os.path.join(weights_dir, f"logistic_regression_model_{ngram_type}.pkl")
+        hyperparams_filename = os.path.join(weights_dir, f"logistic_regression_params_{ngram_type}.pkl")
+        scaler_filename = os.path.join(weights_dir, f"logistic_regression_scaler_{ngram_type}.pkl")
 
+                  
+        # Load the entire class instance if available
         if os.path.exists(self.model_filename) and not override:
-            print(f"Loading Logistic Regression model weights from {self.model_filename}")
-            self.model = joblib.load(self.model_filename)
+            # Load the entire class instance
+            loaded_self = joblib.load(self.model_filename)
+            self.__dict__.update(loaded_self.__dict__)
         else:
-            print("Training Logistic Regression model...")
-            # Note: Logistic Regression doesn't use feature selection in this implementation
-            self.model.fit(X_train, y_train)
-            joblib.dump(self.model, self.model_filename)
-            print(f"Logistic Regression model weights saved to {self.model_filename}")
+            self.accuracy_scores = []
+            # Initialize the scaler
+            self.scaler = StandardScaler(with_mean=False)
+            # Scale the training data
+            X_train_scaled = self.scaler.fit_transform(X_train)
+            X_test_scaled = self.scaler.transform(X_test)
+            # Save the scaler
+            joblib.dump(self.scaler, scaler_filename)
+            for _ in range(num_runs):
+                # Initialize the Logistic Regression model
+                model = LogisticRegressionCV(random_state=np.random.randint(0, 10000))
+                # Train the model
+                model.fit(X_train_scaled, y_train)
+                # Predict on test set
+                y_pred = model.predict(X_test_scaled)
+                # Compute accuracy
+                accuracy = accuracy_score(y_test, y_pred)
+                self.accuracy_scores.append(accuracy)
+                self.model = model  # Save the last trained model
+
+            # Save the entire class instance
+            joblib.dump(self, self.model_filename)
+
 
     def predict(self, X_test):
         """
@@ -52,15 +74,22 @@ class LogisticRegressionClassifier(BaseModel):
         print("LogisticRegressionCV handles tuning internally during fitting. No separate tuning step needed.")
         print("Optimal parameters for Logistic Regression will be determined during training.")
 
+
     def get_important_features(self):
-        """
-        For Logistic Regression, returns the indices of the top absolute coefficient values.
-        """
-        # Get absolute coefficients for both classes
-        coef = self.model.named_steps['logisticregressioncv'].coef_[0]
-        fake_indices = np.argsort(coef)[-5:]  # Top 5 positive coefficients (fake)
-        genuine_indices = np.argsort(coef)[:5]  # Top 5 negative coefficients (genuine)
-        return {
-            "Deceptive": fake_indices,
-            "Truthful": genuine_indices
-        }
+        """Returns indices of the most important features for both classes."""
+        if self.model is not None:
+            # Access coefficients directly from LogisticRegressionCV
+            coef = self.model.coef_[0]  # Get coefficients for the positive class
+            indices = np.argsort(coef)
+
+            deceptive_indices = indices[-5:]  # Top 5 positive coefficients (indicative of deceptive reviews)
+            truthful_indices = indices[:5]    # Top 5 negative coefficients (indicative of truthful reviews)
+
+            return {
+                "Deceptive": deceptive_indices.tolist(),
+                "Truthful": truthful_indices.tolist()
+            }
+        else:
+            return {"Deceptive": [], "Truthful": []}
+
+

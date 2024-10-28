@@ -1,0 +1,66 @@
+{
+  "Naive Bayes Unigrams_TfIdf": {
+    "Deceptive": [
+      "relax",
+      "eggs",
+      "settled",
+      "originally",
+      "dissatisfied"
+    ],
+    "Truthful": [
+      "emergency",
+      "stated",
+      "fridge",
+      "sofa",
+      "priceline"
+    ]
+  },
+  "Logistic Regression Unigrams_TfIdf": {
+    "Deceptive": [
+      "recently",
+      "finally",
+      "smell",
+      "my",
+      "chicago"
+    ],
+    "Truthful": [
+      "location",
+      "great",
+      "open",
+      "star",
+      "elevators"
+    ]
+  },
+  "Decision Tree Unigrams_TfIdf": {
+    "Deceptive": [
+      "chicago",
+      "decided",
+      "location",
+      "found",
+      "zoo"
+    ],
+    "Truthful": [
+      "problems",
+      "procedure",
+      "procedures",
+      "proceed",
+      "aaa"
+    ]
+  },
+  "Random Forest Unigrams_TfIdf": {
+    "Deceptive": [
+      "chicago",
+      "was",
+      "at",
+      "my",
+      "hotel"
+    ],
+    "Truthful": [
+      "sweater",
+      "motorcyclers",
+      "couches",
+      "hermes",
+      "prudently"
+    ]
+  }
+}

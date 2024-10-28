@@ -11,17 +11,7 @@ from src.evaluator import (
 import os
 
 def run_experiment(root_dir: str):
-    """
-    Runs the experiment workflow: loading data, preprocessing, training, and evaluation.
-    Uses folds 1-4 for training and fold 5 for final testing.
-    
-    Args:
-        root_dir (str): The root directory where the data is stored.
-    """
-    # Step 1: Load and split the data
     train_data, test_data = load_and_split_data(root_dir)
-    
-    # Step 2: Preprocess the text data
     train_data['text'] = train_data['text'].apply(clean_text)
     test_data['text'] = test_data['text'].apply(clean_text)
 
@@ -54,7 +44,7 @@ def run_experiment(root_dir: str):
     y_train = train_data['label']
     y_test = test_data['label']
 
-    models = {
+    model_classes = {
         "Naive Bayes": NaiveBayesClassifier,
         "Logistic Regression": LogisticRegressionClassifier,
         "Decision Tree": DecisionTreeModel,
@@ -64,21 +54,22 @@ def run_experiment(root_dir: str):
     results = {}
     trained_models = {}
 
-    for model_name, model_class in models.items():
+    num_runs = 5  # Number of runs for each model
+
+    for model_name, ModelClass in model_classes.items():
         for feat_config, _ in feature_configs:
             for vec_type, _ in vectorizer_types:
                 key = f"{feat_config}_{vec_type}"
                 full_name = f"{model_name} {key}"
                 print(f"Training {full_name}...")
-                
-                model = model_class()
+                model = ModelClass()
                 X_train = X_train_features[key]
                 X_test = X_test_features[key]
-                
+                # Tune hyperparameters
                 model.tune_hyperparameters(X_train, y_train, ngram_type=key)
-                model.train(X_train, y_train, ngram_type=key, use_feature_selection=True)
+                # Train the model
+                model.train(X_train, y_train, X_test, y_test, ngram_type=key, num_runs=num_runs)
                 y_pred = model.predict(X_test)
-                
                 metrics = calculate_metrics(y_test, y_pred)
                 results[full_name] = metrics
                 trained_models[full_name] = model
@@ -93,13 +84,12 @@ def run_experiment(root_dir: str):
     for feat_config, _ in feature_configs:
         for vec_type, _ in vectorizer_types:
             key = f"{feat_config}_{vec_type}"
+            prefix = key
             relevant_models = {k: v for k, v in trained_models.items() if key in k}
-            top_features = get_top_features_across_models(relevant_models, feature_names[key], save_dir=results_dir, prefix=key)
+            get_top_features_across_models(relevant_models, feature_names[key], save_dir=results_dir, prefix=prefix)
     
-    compare_accuracies(results, save_dir=results_dir)
+    compare_accuracies(trained_models, save_dir=results_dir)
     answer_questions(results, feature_names, save_dir=results_dir)
-    
-    return results
 
 if __name__ == "__main__":
     root_dir = "Assignment 2/op_spam_v1.4/op_spam_v1.4/"

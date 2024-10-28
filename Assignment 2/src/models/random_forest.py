@@ -6,36 +6,51 @@ import joblib
 from joblib import Parallel, delayed
 import numpy as np
 from itertools import product
+from sklearn.metrics import accuracy_score
 
 class RandomForestModel(BaseModel):
-    os.environ['NUMEXPR_MAX_THREADS'] = '10'  # Set to 10 threads
     def __init__(self):
-        self.model = RandomForestClassifier(oob_score=True)
+        self.model = RandomForestClassifier()
+        self.accuracy_scores = []
+        self.hyperparams = None
+        self.model_filename = None
 
-
-    def train(self, X_train, y_train, ngram_type='uni', override=False, use_feature_selection=False):
-        """
-        Trains the Random Forest model on the training data.
-        Checks for existing saved weights before training.
-        """
-        # Define the weights directory and model filename
+    def train(self, X_train, y_train, X_test, y_test, ngram_type='uni', num_runs=50, override=False):
+        # Define directories and filenames
         weights_dir = "Assignment 2/src/models/weights"
         os.makedirs(weights_dir, exist_ok=True)
         self.model_filename = os.path.join(weights_dir, f"random_forest_model_{ngram_type}.pkl")
+        hyperparams_filename = os.path.join(weights_dir, f"random_forest_params_{ngram_type}.pkl")
 
-        print(f"Attempting to train/load Random Forest model for {ngram_type}")
-        print(f"Model filename: {self.model_filename}") 
+        # Load hyperparameters if available
+        if self.hyperparams is None:
+            if os.path.exists(hyperparams_filename):
+                self.hyperparams = joblib.load(hyperparams_filename)
+            else:
+                raise ValueError("Hyperparameters not found. Please run tune_hyperparameters before training.")
 
+        # Load the entire class instance if available
         if os.path.exists(self.model_filename) and not override:
-            print(f"Loading Random Forest model weights from {self.model_filename}")
-            self.model = joblib.load(self.model_filename)
+            # Load the entire class instance
+            loaded_self = joblib.load(self.model_filename)
+            self.__dict__.update(loaded_self.__dict__)
         else:
-            print(f"Training Random Forest model for {ngram_type}...")
-            self.model.fit(X_train, y_train)
-            joblib.dump(self.model, self.model_filename)
-            print(f"Random Forest model weights saved to {self.model_filename}")
+            self.accuracy_scores = []
+            for _ in range(num_runs):
+                # Initialize a new model for each run
+                model = RandomForestClassifier(**self.hyperparams, random_state=np.random.randint(0, 10000))
+                # Train the model
+                model.fit(X_train, y_train)
+                # Predict on test set
+                y_pred = model.predict(X_test)
+                # Compute accuracy
+                accuracy = accuracy_score(y_test, y_pred)
+                self.accuracy_scores.append(accuracy)
+                self.model = model  # Save the last model
 
-        print(f"Random Forest model for {ngram_type} is ready")
+            # Save the entire class instance
+            joblib.dump(self, self.model_filename)
+
 
     def predict(self, X_test):
         """
@@ -128,13 +143,14 @@ class RandomForestModel(BaseModel):
                 print("No improvement found. Using default parameters.")
 
     def get_important_features(self):
-        """
-        Returns the feature importances from the Random Forest.
-        """
-        importances = self.model.feature_importances_
-        sorted_idx = np.argsort(importances)
-        top_indices = sorted_idx[-5:]  # Top 5 important features
-        return {
-            "Deceptive": top_indices,
-            "Truthful": sorted_idx[:5]  # Bottom 5 important features (as a proxy for genuine)
-        }
+        if self.model is not None:
+            importances = self.model.feature_importances_
+            indices = np.argsort(importances)[::-1]
+            deceptive_indices = indices[:5]
+            truthful_indices = indices[-5:]
+            return {
+                "Deceptive": deceptive_indices,
+                "Truthful": truthful_indices
+            }
+        else:
+            return {"Deceptive": [], "Truthful": []}

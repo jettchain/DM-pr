@@ -6,241 +6,189 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 import json
-import sys
 from io import StringIO
+import numpy as np
+from scipy.stats import ttest_rel
+from statsmodels.stats.multitest import multipletests
+import os
+import json
 
-class PrintCapture:
-    def __init__(self):
-        self.old_stdout = sys.stdout
-        self.output = StringIO()
 
-    def __enter__(self):
-        sys.stdout = self.output
-        return self
-
-    def __exit__(self, *args):
-        sys.stdout = self.old_stdout
-
-    def get_output(self):
-        return self.output.getvalue()
-
-def save_output(output, save_dir, filename):
-    with open(os.path.join(save_dir, filename), 'w') as f:
-        f.write(output)
+# evaluator.py
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_curve, auc
+import numpy as np
+from scipy.stats import wilcoxon
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+import json
 
 def calculate_metrics(y_true, y_pred):
     metrics = {
         "accuracy": accuracy_score(y_true, y_pred),
-        "precision": precision_score(y_true, y_pred),
-        "recall": recall_score(y_true, y_pred),
-        "f1_score": f1_score(y_true, y_pred)
+        "precision": precision_score(y_true, y_pred, zero_division=0),
+        "recall": recall_score(y_true, y_pred, zero_division=0),
+        "f1_score": f1_score(y_true, y_pred, zero_division=0)
     }
     return metrics
 
 def compare_models(results, save_dir):
-    with PrintCapture() as capture:
-        print("\nModel Comparison:")
-        print("--------------------------------------------------")
+    os.makedirs(save_dir, exist_ok=True)
+    with open(os.path.join(save_dir, 'model_comparison.txt'), 'w') as f:
+        f.write("Model Comparison:\n")
+        f.write("--------------------------------------------------\n")
         for model_name, metrics in results.items():
-            print(f"{model_name}:")
+            f.write(f"{model_name}:\n")
             for metric, score in metrics.items():
                 if isinstance(score, (int, float)):
-                    print(f"  {metric}: {score:.4f}")
-            print("--------------------------------------------------")
-    
-    output = capture.get_output()
-    save_output(output, save_dir, 'model_comparison.txt')
+                    f.write(f"  {metric}: {score:.4f}\n")
+            f.write("--------------------------------------------------\n")
     print(f"Model comparison results have been saved to {save_dir}")
 
 def get_top_features_across_models(models, feature_names, save_dir, top_n=5, prefix=""):
-    with PrintCapture() as capture:
-        fake_feature_importance = defaultdict(float)
-        genuine_feature_importance = defaultdict(float)
-        
-        for model_name, model in models.items():
-            if not hasattr(model, 'get_important_features') or not callable(getattr(model, 'get_important_features')):
-                print(f"Warning: Skipping invalid model object: {model_name}")
-                continue
-
+    os.makedirs(save_dir, exist_ok=True)
+    all_top_features = {}
+    for model_name, model in models.items():
+        if hasattr(model, 'get_important_features'):
             important_features = model.get_important_features()
-            
-            if isinstance(important_features, dict):
-                for idx in important_features['Deceptive']:
-                    fake_feature_importance[feature_names[idx]] += 1
-                for idx in important_features['Truthful']:
-                    genuine_feature_importance[feature_names[idx]] += 1
-            else:
-                sorted_indices = important_features.argsort()
-                top_fake_indices = sorted_indices[-top_n:]
-                top_genuine_indices = sorted_indices[:top_n]
-                for idx in top_fake_indices:
-                    fake_feature_importance[feature_names[idx]] += important_features[idx]
-                for idx in top_genuine_indices:
-                    genuine_feature_importance[feature_names[idx]] += important_features[idx]
-        
-        top_fake_features = sorted(fake_feature_importance.items(), key=lambda x: x[1], reverse=True)[:top_n]
-        top_genuine_features = sorted(genuine_feature_importance.items(), key=lambda x: x[1], reverse=True)[:top_n]
-        
-        fake_features = [f[0] for f in top_fake_features]
-        genuine_features = [f[0] for f in top_genuine_features]
-
-        print(f"\nTop {top_n} features indicative of fake reviews across models:")
-        print(", ".join(fake_features))
-        
-        print(f"\nTop {top_n} features indicative of genuine reviews across models:")
-        print(", ".join(genuine_features))
-
-    output = capture.get_output()
-    output_filename = f'top_features_{prefix}.txt'
-    json_filename = f'top_features_{prefix}.json'
-    save_output(output, save_dir, output_filename)
-    
-    top_features = {
-        "fake": top_fake_features,
-        "genuine": top_genuine_features
-    }
-    
-    with open(os.path.join(save_dir, json_filename), 'w') as f:
-        json.dump(top_features, f, indent=2)
-    
+            deceptive_indices = important_features.get('Deceptive', [])
+            truthful_indices = important_features.get('Truthful', [])
+            deceptive_features = [feature_names[idx] for idx in deceptive_indices if idx < len(feature_names)]
+            truthful_features = [feature_names[idx] for idx in truthful_indices if idx < len(feature_names)]
+            all_top_features[model_name] = {
+                "Deceptive": deceptive_features[:top_n],
+                "Truthful": truthful_features[:top_n]
+            }
+    with open(os.path.join(save_dir, f'top_features_{prefix}.json'), 'w') as f:
+        json.dump(all_top_features, f, indent=2)
     print(f"Top features for {prefix} have been saved to {save_dir}")
-    return top_features
+    return all_top_features
 
-def compare_accuracies(results, save_dir):
-    with PrintCapture() as capture:
-        model_names = list(results.keys())
-        accuracies = [results[model]['accuracy'] for model in model_names]
-        
-        comparisons = []
-        for i in range(len(model_names)):
-            for j in range(i+1, len(model_names)):
-                model1, model2 = model_names[i], model_names[j]
-                acc1, acc2 = accuracies[i], accuracies[j]
-                
-                _, p_value = wilcoxon([acc1], [acc2])
-                
-                comparison = {
-                    "models": f"{model1} vs {model2}",
-                    "accuracy_difference": abs(acc1 - acc2),
-                    "p_value": p_value,
-                    "significant": p_value < 0.05
-                }
-                comparisons.append(comparison)
-                
-                print(f"{model1} vs {model2}:")
-                print(f"  Accuracy difference: {abs(acc1 - acc2):.4f}")
-                print(f"  p-value: {p_value:.4f}")
-                print(f"  {'Statistically significant' if p_value < 0.05 else 'Not statistically significant'}\n")
-    
-    output = capture.get_output()
-    save_output(output, save_dir, 'accuracy_comparison.txt')
-    
-    with open(os.path.join(save_dir, 'accuracy_comparison.json'), 'w') as f:
+def compare_accuracies(models, save_dir):
+    import numpy as np
+    from scipy.stats import ttest_rel
+    from statsmodels.stats.multitest import multipletests
+    import os
+    import json
+
+    os.makedirs(save_dir, exist_ok=True)
+    model_names = list(models.keys())
+    comparisons = []
+    p_values = []
+
+    for i in range(len(model_names)):
+        for j in range(i + 1, len(model_names)):
+            model1_name = model_names[i]
+            model2_name = model_names[j]
+
+            # Ensure model pairs belong to the same category
+            if any(x in model1_name and x in model2_name for x in ["Unigrams_Count", "Unigrams_TfIdf", "Bigrams_Count", "Bigrams_TfIdf", "UniBigrams_Count", "UniBigrams_TfIdf"]):
+                acc1 = models[model1_name].accuracy_scores
+                acc2 = models[model2_name].accuracy_scores
+
+                # Perform paired t-test if both models have scores
+                if len(acc1) > 0 and len(acc2) > 0:
+                    stat, p_value = ttest_rel(acc1, acc2)
+                    mean_diff = np.mean(acc1) - np.mean(acc2)
+                    significant = bool(p_value < 0.05)  # Convert to Python bool
+
+                    comparisons.append({
+                        "models": f"{model1_name} vs {model2_name}",
+                        "mean_accuracy_difference": mean_diff,
+                        "p_value": float(p_value),  # Ensure p_value is float
+                        "significant": significant
+                    })
+                    p_values.append(p_value)
+
+    # Multiple testing correction
+    corrected_p_values, corrected_significant = multipletests(p_values, alpha=0.05, method='bonferroni')[:2]
+    corrected_significant = [bool(x) for x in corrected_significant]  # Convert to Python bool
+
+    for comparison, corrected_p, corrected_sig in zip(comparisons, corrected_p_values, corrected_significant):
+        comparison["corrected_p_value"] = float(corrected_p)  # Ensure corrected_p_value is float
+        comparison["corrected_significant"] = corrected_sig
+
+    # Explicitly convert any remaining numpy types to JSON-compatible types
+    comparisons = [
+        {k: (bool(v) if isinstance(v, np.bool_) else v) for k, v in comp.items()} for comp in comparisons
+    ]
+
+    # Save results to JSON
+    with open(os.path.join(save_dir, 'accuracy_comparison_ttest.json'), 'w') as f:
         json.dump(comparisons, f, indent=2)
-    
-    print(f"Accuracy comparison results have been saved to {save_dir}")
-    return comparisons
+
 
 def answer_questions(results, feature_names, save_dir):
-    with PrintCapture() as capture:
-        print("\nAnswering experiment questions:")
-        
-        answers = {}
-        
-        print("\n1. Comparison of Naive Bayes and Logistic Regression:")
-        nb_uni_acc = results["Naive Bayes Unigrams_Count"]["accuracy"]
-        lr_uni_acc = results["Logistic Regression Unigrams_Count"]["accuracy"]
-        better_model = 'Naive Bayes' if nb_uni_acc > lr_uni_acc else 'Logistic Regression'
-        print(f"  Naive Bayes (unigrams) accuracy: {nb_uni_acc:.4f}")
-        print(f"  Logistic Regression (unigrams) accuracy: {lr_uni_acc:.4f}")
-        print(f"  {better_model} performs better.")
-        print("  This comparison shows how a generative model (Naive Bayes) compares to a discriminative model (Logistic Regression) for this task.")
-        answers["q1"] = {
-            "nb_accuracy": nb_uni_acc,
-            "lr_accuracy": lr_uni_acc,
-            "better_model": better_model
-        }
-
-        print("\n2. Performance of Random Forest compared to linear classifiers:")
-        rf_uni_acc = results["Random Forest Unigrams_Count"]["accuracy"]
-        best_linear_acc = max(nb_uni_acc, lr_uni_acc)
-        print(f"  Random Forest (unigrams) accuracy: {rf_uni_acc:.4f}")
-        print(f"  Best linear classifier accuracy: {best_linear_acc:.4f}")
-        print(f"  Random Forest {'improves' if rf_uni_acc > best_linear_acc else 'does not improve'} on the performance of linear classifiers.")
-        print("  This shows whether the ensemble of non-linear classifiers (Random Forest) can capture more complex patterns than linear models.")
-
-        print("\n3. Impact of adding bigram features:")
-        for model_type in ["Naive Bayes", "Logistic Regression", "Decision Tree", "Random Forest"]:
-            uni_acc = results[f"{model_type} Unigrams_Count"]["accuracy"]
-            bi_acc = results[f"{model_type} Bigrams_Count"]["accuracy"]
-            print(f"  {model_type}:")
-            print(f"    Unigrams accuracy: {uni_acc:.4f}")
-            print(f"    Bigrams accuracy: {bi_acc:.4f}")
-            print(f"    Performance {'improves' if bi_acc > uni_acc else 'does not improve'} with bigrams.")
-        print("  This comparison shows whether capturing word pairs (bigrams) provides additional useful information for detecting fake reviews.")
-
-        print("\n4. Five most important terms pointing towards a fake review:")
-        uni_top_features = get_top_features_across_models({k: v for k, v in results.items() if "Unigrams_Count" in k}, feature_names["Unigrams_Count"], save_dir, prefix="Unigrams_Count")
-        bi_top_features = get_top_features_across_models({k: v for k, v in results.items() if "Bigrams_Count" in k}, feature_names["Bigrams_Count"], save_dir, prefix="Bigrams_Count")
-        print("  Unigrams:", ", ".join([f[0] for f in uni_top_features["fake"][:5]]))
-        print("  Bigrams:", ", ".join([f[0] for f in bi_top_features["fake"][:5]]))
-        print("  These terms are most indicative of deceptive reviews across all models.")
-
-        print("\n5. Five most important terms pointing towards a genuine review:")
-        print("  Unigrams:", ", ".join([f[0] for f in uni_top_features["genuine"][:5]]))
-        print("  Bigrams:", ", ".join([f[0] for f in bi_top_features["genuine"][:5]]))
-        print("  These terms are most indicative of truthful reviews across all models.")
-
-    output = capture.get_output()
-    save_output(output, save_dir, 'experiment_answers.txt')
-    
+    os.makedirs(save_dir, exist_ok=True)
+    answers = {}
+    nb_uni_acc = results["Naive Bayes Unigrams_Count"]["accuracy"]
+    lr_uni_acc = results["Logistic Regression Unigrams_Count"]["accuracy"]
+    better_model = 'Naive Bayes' if nb_uni_acc > lr_uni_acc else 'Logistic Regression'
+    answers["q1"] = {
+        "nb_accuracy": float(nb_uni_acc),
+        "lr_accuracy": float(lr_uni_acc),
+        "better_model": better_model
+    }
+    rf_uni_acc = results["Random Forest Unigrams_Count"]["accuracy"]
+    best_linear_acc = max(nb_uni_acc, lr_uni_acc)
+    improvement = rf_uni_acc > best_linear_acc
+    answers["q2"] = {
+        "rf_accuracy": float(rf_uni_acc),
+        "best_linear_accuracy": float(best_linear_acc),
+        "improvement": bool(improvement)
+    }
     with open(os.path.join(save_dir, 'experiment_answers.json'), 'w') as f:
         json.dump(answers, f, indent=2)
-    
     print(f"Experiment answers have been saved to {save_dir}")
     return answers
 
+
 def visualize_results(results, models, X_test_features, y_test, results_dir):
-    plt.figure(figsize=(20, 10))
-    sns.barplot(x=list(results.keys()), y=[r['accuracy'] for r in results.values()])
+    os.makedirs(results_dir, exist_ok=True)
+    # Accuracy Comparison
+    plt.figure(figsize=(10, 6))
+    model_names = list(results.keys())
+    accuracies = [results[name]['accuracy'] for name in model_names]
+    sns.barplot(x=model_names, y=accuracies)
     plt.title('Accuracy Comparison')
-    plt.xticks(rotation=90, ha='right')
+    plt.xticks(rotation=90)
     plt.tight_layout()
     plt.savefig(os.path.join(results_dir, 'accuracy_comparison.png'))
     plt.close()
-
-    plt.figure(figsize=(20, 15))
+    # ROC Curves
+    plt.figure(figsize=(10, 8))
     for name, model in models.items():
-        feature_key = '_'.join(name.split()[1:])  # Extract feature configuration from model name
-        X_test = X_test_features[feature_key]
-        y_pred_proba = model.predict_proba(X_test)[:, 1]
-        fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
-        roc_auc = auc(fpr, tpr)
-        plt.plot(fpr, tpr, label=f'{name} (AUC = {roc_auc:.2f})')
-    
+        feature_key = '_'.join(name.split()[1:])
+        X_test = X_test_features.get(feature_key)
+        if X_test is not None and hasattr(model, 'predict_proba'):
+            y_pred_proba = model.predict_proba(X_test)[:, 1]
+            fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
+            roc_auc = auc(fpr, tpr)
+            plt.plot(fpr, tpr, label=f'{name} (AUC = {roc_auc:.2f})')
     plt.plot([0, 1], [0, 1], 'k--')
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title('Receiver Operating Characteristic (ROC) Curve')
-    plt.legend(loc="lower right", fontsize='small')
+    plt.title('ROC Curves')
+    plt.legend(loc='lower right')
     plt.tight_layout()
     plt.savefig(os.path.join(results_dir, 'roc_curves.png'))
     plt.close()
-
-    fig, axes = plt.subplots(4, 6, figsize=(30, 20))
-    axes = axes.ravel()
+    # Confusion Matrices
+    num_models = len(models)
+    cols = 3
+    rows = (num_models + cols - 1) // cols
+    fig, axes = plt.subplots(rows, cols, figsize=(15, 5 * rows))
+    axes = axes.flatten()
     for i, (name, model) in enumerate(models.items()):
         feature_key = '_'.join(name.split()[1:])
-        X_test = X_test_features[feature_key]
-        y_pred = model.predict(X_test)
-        cm = confusion_matrix(y_test, y_pred)
-        sns.heatmap(cm, annot=True, fmt='d', ax=axes[i])
-        axes[i].set_title(f'Confusion Matrix - {name}')
-        axes[i].set_xlabel('Predicted')
-        axes[i].set_ylabel('True')
-    
+        X_test = X_test_features.get(feature_key)
+        if X_test is not None:
+            y_pred = model.predict(X_test)
+            cm = confusion_matrix(y_test, y_pred)
+            sns.heatmap(cm, annot=True, fmt='d', ax=axes[i])
+            axes[i].set_title(f'Confusion Matrix - {name}')
+            axes[i].set_xlabel('Predicted')
+            axes[i].set_ylabel('True')
     plt.tight_layout()
     plt.savefig(os.path.join(results_dir, 'confusion_matrices.png'))
     plt.close()

@@ -1,0 +1,146 @@
+Model Comparison:
+--------------------------------------------------
+Naive Bayes Unigrams_Count:
+  accuracy: 0.8375
+  precision: 0.8649
+  recall: 0.8000
+  f1_score: 0.8312
+--------------------------------------------------
+Naive Bayes Unigrams_TfIdf:
+  accuracy: 0.7500
+  precision: 0.8125
+  recall: 0.6500
+  f1_score: 0.7222
+--------------------------------------------------
+Naive Bayes Bigrams_Count:
+  accuracy: 0.7500
+  precision: 0.7500
+  recall: 0.7500
+  f1_score: 0.7500
+--------------------------------------------------
+Naive Bayes Bigrams_TfIdf:
+  accuracy: 0.7750
+  precision: 0.7895
+  recall: 0.7500
+  f1_score: 0.7692
+--------------------------------------------------
+Naive Bayes UniBigrams_Count:
+  accuracy: 0.8187
+  precision: 0.8148
+  recall: 0.8250
+  f1_score: 0.8199
+--------------------------------------------------
+Naive Bayes UniBigrams_TfIdf:
+  accuracy: 0.7688
+  precision: 0.8116
+  recall: 0.7000
+  f1_score: 0.7517
+--------------------------------------------------
+Logistic Regression Unigrams_Count:
+  accuracy: 0.5750
+  precision: 0.5417
+  recall: 0.9750
+  f1_score: 0.6964
+--------------------------------------------------
+Logistic Regression Unigrams_TfIdf:
+  accuracy: 0.5000
+  precision: 0.0000
+  recall: 0.0000
+  f1_score: 0.0000
+--------------------------------------------------
+Logistic Regression Bigrams_Count:
+  accuracy: 0.7000
+  precision: 0.6356
+  recall: 0.9375
+  f1_score: 0.7576
+--------------------------------------------------
+Logistic Regression Bigrams_TfIdf:
+  accuracy: 0.5000
+  precision: 0.0000
+  recall: 0.0000
+  f1_score: 0.0000
+--------------------------------------------------
+Logistic Regression UniBigrams_Count:
+  accuracy: 0.6312
+  precision: 0.5789
+  recall: 0.9625
+  f1_score: 0.7230
+--------------------------------------------------
+Logistic Regression UniBigrams_TfIdf:
+  accuracy: 0.5000
+  precision: 0.0000
+  recall: 0.0000
+  f1_score: 0.0000
+--------------------------------------------------
+Decision Tree Unigrams_Count:
+  accuracy: 0.7000
+  precision: 0.7286
+  recall: 0.6375
+  f1_score: 0.6800
+--------------------------------------------------
+Decision Tree Unigrams_TfIdf:
+  accuracy: 0.6188
+  precision: 0.6173
+  recall: 0.6250
+  f1_score: 0.6211
+--------------------------------------------------
+Decision Tree Bigrams_Count:
+  accuracy: 0.6000
+  precision: 0.5930
+  recall: 0.6375
+  f1_score: 0.6145
+--------------------------------------------------
+Decision Tree Bigrams_TfIdf:
+  accuracy: 0.6000
+  precision: 0.6250
+  recall: 0.5000
+  f1_score: 0.5556
+--------------------------------------------------
+Decision Tree UniBigrams_Count:
+  accuracy: 0.5938
+  precision: 0.5974
+  recall: 0.5750
+  f1_score: 0.5860
+--------------------------------------------------
+Decision Tree UniBigrams_TfIdf:
+  accuracy: 0.6312
+  precision: 0.6438
+  recall: 0.5875
+  f1_score: 0.6144
+--------------------------------------------------
+Random Forest Unigrams_Count:
+  accuracy: 0.8313
+  precision: 0.8533
+  recall: 0.8000
+  f1_score: 0.8258
+--------------------------------------------------
+Random Forest Unigrams_TfIdf:
+  accuracy: 0.8500
+  precision: 0.8500
+  recall: 0.8500
+  f1_score: 0.8500
+--------------------------------------------------
+Random Forest Bigrams_Count:
+  accuracy: 0.8250
+  precision: 0.8611
+  recall: 0.7750
+  f1_score: 0.8158
+--------------------------------------------------
+Random Forest Bigrams_TfIdf:
+  accuracy: 0.8000
+  precision: 0.7553
+  recall: 0.8875
+  f1_score: 0.8161
+--------------------------------------------------
+Random Forest UniBigrams_Count:
+  accuracy: 0.8562
+  precision: 0.9014
+  recall: 0.8000
+  f1_score: 0.8477
+--------------------------------------------------
+Random Forest UniBigrams_TfIdf:
+  accuracy: 0.8500
+  precision: 0.8500
+  recall: 0.8500
+  f1_score: 0.8500
+--------------------------------------------------

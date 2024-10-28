@@ -1,0 +1,546 @@
+[
+  {
+    "models": "Naive Bayes Unigrams_Count vs Logistic Regression Unigrams_Count",
+    "mean_accuracy_difference": 0.006249999999999978,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Naive Bayes Unigrams_Count vs Decision Tree Unigrams_Count",
+    "mean_accuracy_difference": 0.17874999999999996,
+    "p_value": 0.0005202479833177392,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes Unigrams_Count vs Random Forest Unigrams_Count",
+    "mean_accuracy_difference": -0.013749999999999929,
+    "p_value": 0.13016218077505892,
+    "significant": false,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes Unigrams_TfIdf vs Logistic Regression Unigrams_TfIdf",
+    "mean_accuracy_difference": -0.125,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Naive Bayes Unigrams_TfIdf vs Decision Tree Unigrams_TfIdf",
+    "mean_accuracy_difference": 0.1250000000000001,
+    "p_value": 0.0011862940326894712,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes Unigrams_TfIdf vs Random Forest Unigrams_TfIdf",
+    "mean_accuracy_difference": -0.09749999999999992,
+    "p_value": 3.128928950503563e-05,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes Bigrams_Count vs Naive Bayes UniBigrams_Count",
+    "mean_accuracy_difference": -0.06874999999999998,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Naive Bayes Bigrams_Count vs Logistic Regression Bigrams_Count",
+    "mean_accuracy_difference": -0.043749999999999956,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Naive Bayes Bigrams_Count vs Logistic Regression UniBigrams_Count",
+    "mean_accuracy_difference": -0.06874999999999998,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Naive Bayes Bigrams_Count vs Decision Tree Bigrams_Count",
+    "mean_accuracy_difference": 0.09875,
+    "p_value": 0.0019909745833613674,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes Bigrams_Count vs Decision Tree UniBigrams_Count",
+    "mean_accuracy_difference": 0.09750000000000003,
+    "p_value": 0.02042572065181367,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes Bigrams_Count vs Random Forest Bigrams_Count",
+    "mean_accuracy_difference": -0.07624999999999993,
+    "p_value": 0.00018412156561657586,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes Bigrams_Count vs Random Forest UniBigrams_Count",
+    "mean_accuracy_difference": -0.08874999999999988,
+    "p_value": 0.0001542684518661331,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes Bigrams_TfIdf vs Naive Bayes UniBigrams_TfIdf",
+    "mean_accuracy_difference": 0.006249999999999978,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Naive Bayes Bigrams_TfIdf vs Logistic Regression Bigrams_TfIdf",
+    "mean_accuracy_difference": 0.006249999999999978,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Naive Bayes Bigrams_TfIdf vs Logistic Regression UniBigrams_TfIdf",
+    "mean_accuracy_difference": -0.0625,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Naive Bayes Bigrams_TfIdf vs Decision Tree Bigrams_TfIdf",
+    "mean_accuracy_difference": 0.12749999999999995,
+    "p_value": 0.001194281120575589,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes Bigrams_TfIdf vs Decision Tree UniBigrams_TfIdf",
+    "mean_accuracy_difference": 0.16749999999999998,
+    "p_value": 0.0027157434402332345,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes Bigrams_TfIdf vs Random Forest Bigrams_TfIdf",
+    "mean_accuracy_difference": -0.028749999999999942,
+    "p_value": 0.003552294602136752,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes Bigrams_TfIdf vs Random Forest UniBigrams_TfIdf",
+    "mean_accuracy_difference": -0.08374999999999988,
+    "p_value": 5.716523435328526e-05,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes UniBigrams_Count vs Logistic Regression Bigrams_Count",
+    "mean_accuracy_difference": 0.025000000000000022,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Naive Bayes UniBigrams_Count vs Logistic Regression UniBigrams_Count",
+    "mean_accuracy_difference": 0.0,
+    "p_value": NaN,
+    "significant": false,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes UniBigrams_Count vs Decision Tree Bigrams_Count",
+    "mean_accuracy_difference": 0.16749999999999998,
+    "p_value": 0.0002606393098437813,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes UniBigrams_Count vs Decision Tree UniBigrams_Count",
+    "mean_accuracy_difference": 0.16625,
+    "p_value": 0.003155224855371609,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes UniBigrams_Count vs Random Forest Bigrams_Count",
+    "mean_accuracy_difference": -0.007499999999999951,
+    "p_value": 0.2605745473680245,
+    "significant": false,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes UniBigrams_Count vs Random Forest UniBigrams_Count",
+    "mean_accuracy_difference": -0.019999999999999907,
+    "p_value": 0.034919706674539065,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes UniBigrams_TfIdf vs Logistic Regression Bigrams_TfIdf",
+    "mean_accuracy_difference": 0.0,
+    "p_value": NaN,
+    "significant": false,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes UniBigrams_TfIdf vs Logistic Regression UniBigrams_TfIdf",
+    "mean_accuracy_difference": -0.06874999999999998,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Naive Bayes UniBigrams_TfIdf vs Decision Tree Bigrams_TfIdf",
+    "mean_accuracy_difference": 0.12124999999999997,
+    "p_value": 0.0014459171974038957,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes UniBigrams_TfIdf vs Decision Tree UniBigrams_TfIdf",
+    "mean_accuracy_difference": 0.16125,
+    "p_value": 0.0031271527144941897,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes UniBigrams_TfIdf vs Random Forest Bigrams_TfIdf",
+    "mean_accuracy_difference": -0.03499999999999992,
+    "p_value": 0.0017051574847275757,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Naive Bayes UniBigrams_TfIdf vs Random Forest UniBigrams_TfIdf",
+    "mean_accuracy_difference": -0.08999999999999986,
+    "p_value": 4.298316960189311e-05,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Unigrams_Count vs Decision Tree Unigrams_Count",
+    "mean_accuracy_difference": 0.1725,
+    "p_value": 0.0005971192453129884,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Unigrams_Count vs Random Forest Unigrams_Count",
+    "mean_accuracy_difference": -0.019999999999999907,
+    "p_value": 0.05062176254926033,
+    "significant": false,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Unigrams_TfIdf vs Decision Tree Unigrams_TfIdf",
+    "mean_accuracy_difference": 0.2500000000000001,
+    "p_value": 7.96184355849206e-05,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Unigrams_TfIdf vs Random Forest Unigrams_TfIdf",
+    "mean_accuracy_difference": 0.02750000000000008,
+    "p_value": 0.004181072135640313,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Bigrams_Count vs Logistic Regression UniBigrams_Count",
+    "mean_accuracy_difference": -0.025000000000000022,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Logistic Regression Bigrams_Count vs Decision Tree Bigrams_Count",
+    "mean_accuracy_difference": 0.14249999999999996,
+    "p_value": 0.0004893452856374664,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Bigrams_Count vs Decision Tree UniBigrams_Count",
+    "mean_accuracy_difference": 0.14125,
+    "p_value": 0.005718068501278112,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Bigrams_Count vs Random Forest Bigrams_Count",
+    "mean_accuracy_difference": -0.03249999999999997,
+    "p_value": 0.004761133730660285,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Bigrams_Count vs Random Forest UniBigrams_Count",
+    "mean_accuracy_difference": -0.04499999999999993,
+    "p_value": 0.002122883053839467,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Bigrams_TfIdf vs Logistic Regression UniBigrams_TfIdf",
+    "mean_accuracy_difference": -0.06874999999999998,
+    "p_value": 0.0,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": false
+  },
+  {
+    "models": "Logistic Regression Bigrams_TfIdf vs Decision Tree Bigrams_TfIdf",
+    "mean_accuracy_difference": 0.12124999999999997,
+    "p_value": 0.0014459171974038957,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Bigrams_TfIdf vs Decision Tree UniBigrams_TfIdf",
+    "mean_accuracy_difference": 0.16125,
+    "p_value": 0.0031271527144941897,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Bigrams_TfIdf vs Random Forest Bigrams_TfIdf",
+    "mean_accuracy_difference": -0.03499999999999992,
+    "p_value": 0.0017051574847275757,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression Bigrams_TfIdf vs Random Forest UniBigrams_TfIdf",
+    "mean_accuracy_difference": -0.08999999999999986,
+    "p_value": 4.298316960189311e-05,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression UniBigrams_Count vs Decision Tree Bigrams_Count",
+    "mean_accuracy_difference": 0.16749999999999998,
+    "p_value": 0.0002606393098437813,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression UniBigrams_Count vs Decision Tree UniBigrams_Count",
+    "mean_accuracy_difference": 0.16625,
+    "p_value": 0.003155224855371609,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression UniBigrams_Count vs Random Forest Bigrams_Count",
+    "mean_accuracy_difference": -0.007499999999999951,
+    "p_value": 0.2605745473680245,
+    "significant": false,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression UniBigrams_Count vs Random Forest UniBigrams_Count",
+    "mean_accuracy_difference": -0.019999999999999907,
+    "p_value": 0.034919706674539065,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression UniBigrams_TfIdf vs Decision Tree Bigrams_TfIdf",
+    "mean_accuracy_difference": 0.18999999999999995,
+    "p_value": 0.0002551302998925756,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression UniBigrams_TfIdf vs Decision Tree UniBigrams_TfIdf",
+    "mean_accuracy_difference": 0.22999999999999998,
+    "p_value": 0.0008169744023703357,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression UniBigrams_TfIdf vs Random Forest Bigrams_TfIdf",
+    "mean_accuracy_difference": 0.03375000000000006,
+    "p_value": 0.0019556862701064557,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Logistic Regression UniBigrams_TfIdf vs Random Forest UniBigrams_TfIdf",
+    "mean_accuracy_difference": -0.02124999999999988,
+    "p_value": 0.010469669289615333,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree Unigrams_Count vs Random Forest Unigrams_Count",
+    "mean_accuracy_difference": -0.1924999999999999,
+    "p_value": 0.0010829397509545936,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree Unigrams_TfIdf vs Random Forest Unigrams_TfIdf",
+    "mean_accuracy_difference": -0.22250000000000003,
+    "p_value": 7.259390510314559e-05,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree Bigrams_Count vs Decision Tree UniBigrams_Count",
+    "mean_accuracy_difference": -0.0012499999999999734,
+    "p_value": 0.9633564603912784,
+    "significant": false,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree Bigrams_Count vs Random Forest Bigrams_Count",
+    "mean_accuracy_difference": -0.17499999999999993,
+    "p_value": 0.0002622691912137063,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree Bigrams_Count vs Random Forest UniBigrams_Count",
+    "mean_accuracy_difference": -0.1874999999999999,
+    "p_value": 0.0004803770257278388,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree Bigrams_TfIdf vs Decision Tree UniBigrams_TfIdf",
+    "mean_accuracy_difference": 0.040000000000000036,
+    "p_value": 0.21357383953266168,
+    "significant": false,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree Bigrams_TfIdf vs Random Forest Bigrams_TfIdf",
+    "mean_accuracy_difference": -0.1562499999999999,
+    "p_value": 0.0009483230215140203,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree Bigrams_TfIdf vs Random Forest UniBigrams_TfIdf",
+    "mean_accuracy_difference": -0.21124999999999983,
+    "p_value": 5.3325290613184954e-05,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree UniBigrams_Count vs Random Forest Bigrams_Count",
+    "mean_accuracy_difference": -0.17374999999999996,
+    "p_value": 0.0034844307794678997,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree UniBigrams_Count vs Random Forest UniBigrams_Count",
+    "mean_accuracy_difference": -0.18624999999999992,
+    "p_value": 0.004437715221052288,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree UniBigrams_TfIdf vs Random Forest Bigrams_TfIdf",
+    "mean_accuracy_difference": -0.19624999999999992,
+    "p_value": 0.0021795638061979515,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Decision Tree UniBigrams_TfIdf vs Random Forest UniBigrams_TfIdf",
+    "mean_accuracy_difference": -0.25124999999999986,
+    "p_value": 0.0005472577692410926,
+    "significant": true,
+    "corrected_p_value": 1.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Random Forest Bigrams_Count vs Random Forest UniBigrams_Count",
+    "mean_accuracy_difference": -0.012499999999999956,
+    "p_value": 0.1998291855377211,
+    "significant": false,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  },
+  {
+    "models": "Random Forest Bigrams_TfIdf vs Random Forest UniBigrams_TfIdf",
+    "mean_accuracy_difference": -0.05499999999999994,
+    "p_value": 0.003210422417162929,
+    "significant": true,
+    "corrected_p_value": 0.0,
+    "corrected_significant": true
+  }
+]
